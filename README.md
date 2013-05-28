@@ -8,10 +8,10 @@ You can find out more about libstreaming [here](https://github.com/fyhertz/libst
 
 ### Example 1
 
-Shows how to start a stream and obtain a SDP that you will then want to hand to the receiver.
+Shows how to use the RTSP server.
 
 ### Example 2
 
-Shows how to use the RTSP server.
+Shows how to start a stream and obtain a SDP that you will then want to hand to the receiver.
 
 

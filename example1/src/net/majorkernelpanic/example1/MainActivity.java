@@ -11,6 +11,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -35,6 +36,9 @@ public class MainActivity extends Activity {
 
 		mSurfaceView = (SurfaceView) findViewById(R.id.surface);
 
+		// Required on old version of Android
+		mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+		
 		// Sets the port of the RTSP server to 1234
 		Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
 		editor.putString(RtspServer.KEY_PORT, String.valueOf(1234));

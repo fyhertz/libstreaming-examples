@@ -10,6 +10,7 @@ import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,6 +40,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		mSurfaceView = (SurfaceView) findViewById(R.id.surface);
 		mEditText = (EditText) findViewById(R.id.editText1);
 
+		// Required on old version of Android
+		mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+		
 		// Configures the SessionBuilder
 		SessionBuilder.getInstance()
 		.setSurfaceHolder(mSurfaceView.getHolder())

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">example3</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="flash">Flash</string>
+    <string name="camera">Camera</string>
+    <string name="quality">Quality</string>
+    <string name="select">Ok</string>
+    <string name="username">Username: </string>
+    <string name="password">Password: </string>
+    <string name="uri">URI: </string>
+    <string name="default_password">admin</string>
+    <string name="default_username">admin</string>
+    <string name="default_bitrate">0kbps</string>
+    <string name="default_stream">rtsp://wowzaipaddress:1935/live/stream.sdp</string>
+
+</resources>

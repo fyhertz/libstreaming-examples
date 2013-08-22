@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:color="@android:color/background_light"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity"
+    android:color="@android:color/background_light" >
 
     <SurfaceView
         android:id="@+id/surface"
@@ -11,25 +11,40 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/editText1" />
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:text="@string/start" />
+        android:layout_alignParentRight="true" >
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/start" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Swap" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/editText1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
+        android:layout_above="@+id/layout1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:ems="10"
         android:gravity="center"
         android:singleLine="true"
-        android:text="192.168.0.101" />
+        android:text="192.168.42.200" />
 
 </RelativeLayout>

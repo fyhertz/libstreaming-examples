@@ -1,6 +1,6 @@
 # Some examples of how to use libstreaming
 
-This repository contains two simple examples of how to use libstreaming.
+This repository contains three simple examples of how to use libstreaming.
 
 ### Libstreaming ?
 

@@ -60,8 +60,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		SessionBuilder.getInstance()
 		.setSurfaceHolder(mSurfaceView.getHolder())
 		.setContext(getApplicationContext())
-		.setAudioEncoder(SessionBuilder.AUDIO_AAC)
-		.setVideoEncoder(SessionBuilder.VIDEO_NONE);
+		.setAudioEncoder(SessionBuilder.AUDIO_NONE)
+		.setVideoEncoder(SessionBuilder.VIDEO_H264);
 
 		// Creates the Session
 		try {

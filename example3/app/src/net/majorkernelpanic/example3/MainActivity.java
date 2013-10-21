@@ -9,7 +9,9 @@ import net.majorkernelpanic.streaming.SessionBuilder;
 import net.majorkernelpanic.streaming.rtsp.RtspClient;
 import net.majorkernelpanic.streaming.video.VideoQuality;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
@@ -248,7 +250,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		@Override
 		protected Integer doInBackground(Void... params) {
-			if (!mClient.isRunning()) {
+			if (!mClient.isStreaming()) {
 				String ip,port,path;
 				try {
 					
@@ -330,13 +332,19 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	};
 
-	private void logError(String msg) {
+	private void logError(final String msg) {
 		final String error = (msg == null) ? "Error unknown" : msg; 
 		Log.e(TAG,error);
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();	
+				// Displays a popup to report the eror to the user
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+				builder.setMessage(msg).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {}
+				});
+				AlertDialog dialog = builder.create();
+				dialog.show();
 			}
 		});
 	}

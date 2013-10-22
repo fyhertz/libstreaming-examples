@@ -14,6 +14,6 @@
     <string name="default_password">admin</string>
     <string name="default_username">admin</string>
     <string name="default_bitrate">0kbps</string>
-    <string name="default_stream">rtsp://wowzaipaddress:1935/live/stream.sdp</string>
+    <string name="default_stream">rtsp://wowzaipaddress:1935/live/test.stream</string>
 
 </resources>

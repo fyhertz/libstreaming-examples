@@ -12,9 +12,11 @@
     }
 
     $(document).ready(function () {
-        startPlayer($('#stream').val());
+
+	     startPlayer($('#stream').val());
+
         $('#start').click(function () {
-            jwplayer('player').play();            
+	         startPlayer($('#stream').val());         
         });
         $('#stop').click(function () {
             jwplayer('player').stop();            
@@ -23,6 +25,7 @@
 
     // Starts the flash player
     function startPlayer(stream) {
+
         jwplayer('player').setup({
             height: 480,
             width: 640,
@@ -33,7 +36,8 @@
                 bufferlength: 3
             }
         });
-        jwplayer("player").onMeta( function(event){
+
+	     jwplayer("player").onMeta( function(event){
             var info = "";
             for (var key in data) {
                 info += key + " = " + data[key] + "<BR>";
@@ -43,7 +47,9 @@
             print("event",event);
 
         });
+
         jwplayer('player').play();
+
     }
 
 }(jQuery));

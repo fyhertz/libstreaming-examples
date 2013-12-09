@@ -2,10 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
     <LinearLayout
@@ -40,13 +36,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/quality" />
-
-        <TextView
-            android:id="@+id/bitrate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="@string/default_bitrate" />
     </LinearLayout>
 
     <TextView
@@ -62,13 +51,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_toLeftOf="@+id/indicationUri"
+        android:layout_toLeftOf="@+id/bitrate"
         android:layout_toRightOf="@+id/indicationUri"
         android:ems="10"
+        android:inputType="textUri"
+        android:singleLine="true"
         android:text="@string/default_stream" >
 
-        <requestFocus android:layout_width="match_parent" />
     </EditText>
 
     <LinearLayout
@@ -90,27 +79,33 @@
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:ems="10"
+            android:inputType="text"
+            android:singleLine="true"
             android:text="@string/default_username" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:text="@string/password" />
 
         <EditText
             android:id="@+id/password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:ems="10"
+            android:singleLine="true"
+            android:inputType="textVisiblePassword"
             android:text="@string/default_password" />
+
     </LinearLayout>
 
     <SurfaceView
         android:id="@+id/surface"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/layout2"
         android:layout_alignParentLeft="true"
@@ -133,23 +128,42 @@
             android:layout_height="wrap_content" >
 
             <RadioButton
-                android:id="@+id/quality_low"
+            	android:id="@+id/radio1"    
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="176x144, 15fps, 170kbps" />
+                android:text="176x144, 20 fps, 170 Kbps" />
 
             <RadioButton
-                android:id="@+id/quality_mid"
+                android:id="@+id/radio2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="320x240, 15fps, 250kbps" />
-
+                android:text="176x144, 20 fps, 200 Kbps" />            
+            
             <RadioButton
-                android:id="@+id/quality_high"
+                android:id="@+id/radio3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="320x240, 15fps, 350kbps" />
+                android:text="176x144, 20 fps, 250 Kbps" />           
+            
+            <RadioButton
+                android:id="@+id/radio6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="352x288, 20 fps, 250 Kbps" />
+                        
+            <RadioButton
+                android:id="@+id/radio7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="352x288, 20 fps, 300 Kbps" />
+            
+            <RadioButton
+                android:id="@+id/radio8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="352x288, 20 fps, 400 Kbps" />                      
+            
         </RadioGroup>
 
         <Button
@@ -158,5 +172,14 @@
             android:layout_height="wrap_content"
             android:text="@string/select" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/bitrate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/uri"
+        android:layout_alignBottom="@+id/uri"
+        android:layout_toRightOf="@+id/surface"
+        android:text="@string/default_bitrate" />
 
 </RelativeLayout>

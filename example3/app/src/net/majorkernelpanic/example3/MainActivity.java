@@ -6,7 +6,9 @@ import java.util.regex.Pattern;
 
 import net.majorkernelpanic.streaming.Session;
 import net.majorkernelpanic.streaming.SessionBuilder;
+import net.majorkernelpanic.streaming.audio.AudioQuality;
 import net.majorkernelpanic.streaming.rtsp.RtspClient;
+import net.majorkernelpanic.streaming.rtsp.RtspClient.Callback;
 import net.majorkernelpanic.streaming.video.VideoQuality;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,16 +35,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener, Callback {
 
 	public final static String TAG = "MainActivity";
 
-	private final static VideoQuality QUALITY_LOW = new VideoQuality(176,144,15,170000,0);
-	private final static VideoQuality QUALITY_MID = new VideoQuality(320,240,15,250000,0);
-	private final static VideoQuality QUALITY_HIGH = new VideoQuality(320,240,15,350000,0);
-	
-	private VideoQuality mQuality = QUALITY_LOW;
-	
+	private VideoQuality mQuality;
 	private Button mButtonStart;
 	private Button mButtonFlash;
 	private Button mButtonCamera;
@@ -78,19 +75,18 @@ public class MainActivity extends Activity implements OnClickListener {
 		mTextBitrate = (TextView) findViewById(R.id.bitrate);
 		mLayoutMenu =  (LinearLayout) findViewById(R.id.menu);
 		mRadioGroup =  (RadioGroup) findViewById(R.id.radio);
-		
-		// Required on old version of Android
-		mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
 		// Configures the SessionBuilder
 		SessionBuilder.getInstance()
 		.setSurfaceHolder(mSurfaceView.getHolder())
 		.setContext(getApplicationContext())
 		.setAudioEncoder(SessionBuilder.AUDIO_AAC)
+		.setAudioQuality(new AudioQuality(16000,16000))
 		.setVideoEncoder(SessionBuilder.VIDEO_H264);
 
 		// Configures the RTSP client
 		mClient = new RtspClient();
+		mClient.setCallback(this);
 
 		// Creates the Session
 		try {
@@ -137,16 +133,16 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			@Override
 			public void surfaceDestroyed(SurfaceHolder holder) {
-				new StopStreamAsyncTask().execute();
+				mClient.stopStream();
 			}
 
 		});		
-		
+
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 		mEditTextURI.setText(mPrefs.getString("uri", getString(R.string.default_stream)));
 		mEditTextPassword.setText(mPrefs.getString("password", getString(R.string.default_password)));
 		mEditTextUsername.setText(mPrefs.getString("username", getString(R.string.default_username)));
-		
+
 	}
 
 	@Override
@@ -168,7 +164,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.start:
 			disableUI();
-			new ToggleStreamAsyncTask().execute();
+			toggleStream();
 			break;
 		case R.id.flash:
 			try {
@@ -192,34 +188,41 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		mClient.release();
+	}
+
 	private void selectQuality() {
 		int id = mRadioGroup.getCheckedRadioButtonId();
-		switch (id) {
-		case R.id.quality_high:
-			mQuality = QUALITY_HIGH;
-			break;
-		case R.id.quality_mid:
-			mQuality = QUALITY_MID;
-			break;
-		case R.id.quality_low:
-			mQuality = QUALITY_LOW;
-			break;
-		}
+		RadioButton button = (RadioButton) findViewById(id);
+		String text = button.getText().toString();
+		Pattern pattern = Pattern.compile("(\\d+)x(\\d+)\\D+(\\d+)\\D+(\\d+)");
+		Matcher matcher = pattern.matcher(text);
+
+		matcher.find();
+		int width = Integer.parseInt(matcher.group(1));
+		int height = Integer.parseInt(matcher.group(2));
+		int framerate = Integer.parseInt(matcher.group(3));
+		int bitrate = Integer.parseInt(matcher.group(4))*1000;
+
+		mQuality = new VideoQuality(width, height, framerate, bitrate, 0);
 		Toast.makeText(this, ((RadioButton)findViewById(id)).getText(), Toast.LENGTH_SHORT).show();
 	}
-	
+
 	private void enableUI() {
 		mButtonStart.setEnabled(true);
 		mButtonCamera.setEnabled(true);
 		mButtonFlash.setEnabled(true);
 	}
-	
+
 	private void disableUI() {
 		mButtonStart.setEnabled(false);
 		mButtonCamera.setEnabled(false);
 		mButtonFlash.setEnabled(false);
 	}
-	
+
 	// An AsyncTask for switching between the two cameras of the phone
 	private class SwitchCamerasTask extends AsyncTask<Void, Void, Void> {
 
@@ -242,92 +245,53 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	// Connects/disconnects to the RTSP server and starts/stops the stream
-	private class ToggleStreamAsyncTask extends AsyncTask<Void,Void,Integer> {
+	public void toggleStream() {
+		if (!mClient.isStreaming()) {
+			String ip,port,path;
 
-		private final int START_SUCCEEDED = 0x00;
-		private final int START_FAILED = 0x01;
-		private final int STOP = 0x02;
+			// We save the content user inputs in Shared Preferences
+			SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+			Editor editor = mPrefs.edit();
+			editor.putString("uri", mEditTextURI.getText().toString());
+			editor.putString("password", mEditTextPassword.getText().toString());
+			editor.putString("username", mEditTextUsername.getText().toString());
+			editor.commit();
 
-		@Override
-		protected Integer doInBackground(Void... params) {
-			if (!mClient.isStreaming()) {
-				String ip,port,path;
-				try {
-					
-					// We save the content user inputs in Shared Preferences
-					SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-					Editor editor = mPrefs.edit();
-					editor.putString("uri", mEditTextURI.getText().toString());
-					editor.putString("password", mEditTextPassword.getText().toString());
-					editor.putString("username", mEditTextUsername.getText().toString());
-					editor.commit();
-					
-					// We parse the URI written in the Editext
-					Pattern uri = Pattern.compile("rtsp://(.+):(\\d+)/(.+)");
-					Matcher m = uri.matcher(mEditTextURI.getText()); m.find();
-					ip = m.group(1);
-					port = m.group(2);
-					path = m.group(3);
-					
-					// Connection to the RTSP server
-					if (mSession.getVideoTrack() != null) {
-						mSession.getVideoTrack().setVideoQuality(mQuality);
-					}
-					mClient.setCredentials(mEditTextUsername.getText().toString(), mEditTextPassword.getText().toString());
-					mClient.setServerAddress(ip, Integer.parseInt(port));
-					mClient.setStreamPath("/"+path);
-					mClient.startStream(1);
-					
-					// The actual bitrate of the stream is shown to the user 
-					mHandler.post(mUpdateBitrate);
-					
-					return START_SUCCEEDED;
-				} catch (Exception e) {
-					logError(e.getMessage());
-					e.printStackTrace();
-					return START_FAILED;
-				}
-			} else {
-				// Stops the stream and disconnects from the RTSP server
-				mClient.stopStream();
+			// We parse the URI written in the Editext
+			Pattern uri = Pattern.compile("rtsp://(.+):(\\d+)/(.+)");
+			Matcher m = uri.matcher(mEditTextURI.getText()); m.find();
+			ip = m.group(1);
+			port = m.group(2);
+			path = m.group(3);
+
+			// Connection to the RTSP server
+			if (mSession.getVideoTrack() != null) {
+				mSession.getVideoTrack().setVideoQuality(mQuality);
 			}
-			return STOP;
-		}
-
-		protected void onPostExecute(Integer status) {
-			switch (status) {
-			case STOP:
-			case START_FAILED:
-				mButtonStart.setText("Start");
-				break;
-			case START_SUCCEEDED:
-				mButtonStart.setText("Stop");
-				break;
-			}
-			enableUI();
+			mClient.setCredentials(mEditTextUsername.getText().toString(), mEditTextPassword.getText().toString());
+			mClient.setServerAddress(ip, Integer.parseInt(port));
+			mClient.setStreamPath("/"+path);
+			mClient.startStream();
+			
+			mHandler.postDelayed(mUpdateBitrate, 500);
+		} else {
+			// Stops the stream and disconnects from the RTSP server
+			mClient.stopStream();
 		}
 	}
-	
-	// Disconnects from the RTSP server and stops the stream
-	private class StopStreamAsyncTask extends AsyncTask<Void,Void,Void> {
-		@Override
-		protected Void doInBackground(Void... params) {
-				mClient.stopStream();
-				return null;
-		}
-	}
-	
+
+
 	private final Handler mHandler = new Handler();
-	
+
 	private Runnable mUpdateBitrate = new Runnable() {
 		@Override
 		public void run() {
-			if (mSession != null && mSession.isStreaming()) { 
+			if (mSession != null && mClient.isStreaming()) { 
 				long bitrate =  (mSession != null) ? mSession.getBitrate() : 0;
-				mTextBitrate.setText(""+bitrate/1000+"kbps");
-				mHandler.postDelayed(mUpdateBitrate, 1000);
+				mTextBitrate.setText(""+bitrate/1000+" Kbps");
+				mHandler.postDelayed(mUpdateBitrate, 500);
 			} else {
-				mTextBitrate.setText("0kbps");
+				mTextBitrate.setText("0 Kbps");
 			}
 		}
 	};
@@ -348,5 +312,26 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 		});
 	}
-	
+
+	@Override
+	public void onStatusUpdate(int message, Exception e) {
+		switch (message) {
+		case RtspClient.MESSAGE_STREAM_STARTED:
+			enableUI();
+			mButtonStart.setText(R.string.stop);
+			break;
+		case RtspClient.MESSAGE_STREAM_STOPPED:
+			enableUI();
+			mButtonStart.setText(R.string.start);
+			break;
+		case RtspClient.MESSAGE_CONNECTION_FAILED:
+		case RtspClient.MESSAGE_START_FAILED:
+		case RtspClient.MESSAGE_WRONG_CREDENTIALS:
+			enableUI();
+			logError(e.getMessage());
+			e.printStackTrace();
+			break;
+		}
+	}
+
 }

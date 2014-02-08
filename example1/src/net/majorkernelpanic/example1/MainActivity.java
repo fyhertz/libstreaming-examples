@@ -1,6 +1,7 @@
 package net.majorkernelpanic.example1;
 
 import net.majorkernelpanic.streaming.SessionBuilder;
+import net.majorkernelpanic.streaming.gl.SurfaceView;
 import net.majorkernelpanic.streaming.rtsp.RtspServer;
 import android.app.Activity;
 import android.content.Context;
@@ -10,11 +11,9 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
 /**
- * A straightforward example of how to use the RTSP server included in libstreaming
+ * A straightforward example of how to use the RTSP server included in libstreaming.
  */
 public class MainActivity extends Activity {
 
@@ -30,9 +29,6 @@ public class MainActivity extends Activity {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		mSurfaceView = (SurfaceView) findViewById(R.id.surface);
-
-		// Required on old version of Android
-		mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		
 		// Sets the port of the RTSP server to 1234
 		Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
@@ -40,10 +36,9 @@ public class MainActivity extends Activity {
 		editor.commit();
 
 		// Configures the SessionBuilder
-		// Now, by default a client connecting to the RTSP
-		// server will receive AMR and H.263
 		SessionBuilder.getInstance()
-		.setSurfaceHolder(mSurfaceView.getHolder())
+		.setSurfaceView(mSurfaceView)
+		.setPreviewOrientation(90)
 		.setContext(getApplicationContext())
 		.setAudioEncoder(SessionBuilder.AUDIO_NONE)
 		.setVideoEncoder(SessionBuilder.VIDEO_H264);
@@ -71,5 +66,5 @@ public class MainActivity extends Activity {
 		// Unlock screen
 		if (mWakeLock.isHeld()) mWakeLock.release();
 	}
-
+	
 }

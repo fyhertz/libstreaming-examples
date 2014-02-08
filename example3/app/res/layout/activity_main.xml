@@ -103,7 +103,7 @@
 
     </LinearLayout>
 
-    <SurfaceView
+    <net.majorkernelpanic.streaming.gl.SurfaceView
         android:id="@+id/surface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -162,7 +162,13 @@
                 android:id="@+id/radio8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="352x288, 20 fps, 400 Kbps" />                      
+                android:text="352x288, 20 fps, 400 Kbps" />          
+                
+            <RadioButton
+                android:id="@+id/radio9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="640x480, 20 fps, 400 Kbps" />              
             
         </RadioGroup>
 

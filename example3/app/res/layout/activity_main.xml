@@ -131,44 +131,44 @@
             	android:id="@+id/radio1"    
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="176x144, 20 fps, 170 Kbps" />
+                android:text="176x144, 30 fps, 170 Kbps" />
 
             <RadioButton
                 android:id="@+id/radio2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="176x144, 20 fps, 200 Kbps" />            
+                android:text="176x144, 30 fps, 200 Kbps" />            
             
             <RadioButton
+                android:checked="true"
                 android:id="@+id/radio3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="176x144, 20 fps, 250 Kbps" />           
+                android:text="176x144, 30 fps, 250 Kbps" />           
             
             <RadioButton
                 android:id="@+id/radio6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="352x288, 20 fps, 250 Kbps" />
+                android:text="320x240, 30 fps, 250 Kbps" />
                         
             <RadioButton
                 android:id="@+id/radio7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="352x288, 20 fps, 300 Kbps" />
+                android:text="352x288, 30 fps, 300 Kbps" />
             
             <RadioButton
                 android:id="@+id/radio8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="352x288, 20 fps, 400 Kbps" />          
+                android:text="352x288, 30 fps, 400 Kbps" />          
                 
             <RadioButton
                 android:id="@+id/radio9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="640x480, 20 fps, 400 Kbps" />              
+                android:text="640x480, 30 fps, 600 Kbps" />              
             
         </RadioGroup>
 

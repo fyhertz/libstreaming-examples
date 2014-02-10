@@ -7,15 +7,14 @@ import net.majorkernelpanic.streaming.gl.SurfaceView;
 import net.majorkernelpanic.streaming.video.VideoQuality;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -31,14 +30,14 @@ public class MainActivity extends Activity implements OnClickListener, Session.C
 	private SurfaceView mSurfaceView;
 	private EditText mEditText;
 	private Session mSession;
-	private PowerManager.WakeLock mWakeLock;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		
 		mButton1 = (Button) findViewById(R.id.button1);
 		mButton2 = (Button) findViewById(R.id.button2);
 		mSurfaceView = (SurfaceView) findViewById(R.id.surface);
@@ -58,26 +57,8 @@ public class MainActivity extends Activity implements OnClickListener, Session.C
 		mButton1.setOnClickListener(this);
 		mButton2.setOnClickListener(this);
 
-		// Prevents the phone from going to sleep
-		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK,"net.majorkernelpanic.example1.wakelock");
-
 		mSurfaceView.getHolder().addCallback(this);
 		
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		// Lock screen
-		mWakeLock.acquire();
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		// Unlock screen
-		if (mWakeLock.isHeld()) mWakeLock.release();
 	}
 
 	@Override

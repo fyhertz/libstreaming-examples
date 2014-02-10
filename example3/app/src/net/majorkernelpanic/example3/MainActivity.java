@@ -3,7 +3,6 @@ package net.majorkernelpanic.example3;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.majorkernelpanic.streaming.MediaStream;
 import net.majorkernelpanic.streaming.Session;
 import net.majorkernelpanic.streaming.SessionBuilder;
 import net.majorkernelpanic.streaming.audio.AudioQuality;
@@ -12,19 +11,19 @@ import net.majorkernelpanic.streaming.rtsp.RtspClient;
 import net.majorkernelpanic.streaming.video.VideoQuality;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.hardware.Camera.CameraInfo;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -50,12 +49,13 @@ public class MainActivity extends Activity implements OnClickListener, RtspClien
 	private EditText mEditTextPassword;
 	private EditText mEditTextUsername;
 	private Session mSession;
-	private PowerManager.WakeLock mWakeLock;
 	private RtspClient mClient;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		setContentView(R.layout.activity_main);
 
@@ -101,30 +101,12 @@ public class MainActivity extends Activity implements OnClickListener, RtspClien
 
 		// Use this to force streaming with the MediaRecorder API
 		//mSession.getVideoTrack().setStreamingMethod(MediaStream.MODE_MEDIARECORDER_API);
-		
-		// Prevents the phone from going to sleep mode
-		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK,"net.majorkernelpanic.example3.wakelock");
 	
 		mSurfaceView.getHolder().addCallback(this);
 		
 		selectQuality();
 		
 	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		// Lock screen
-		mWakeLock.acquire();
-	}
-		
-	@Override
-	public void onStop() {
-		super.onStop();
-		// Unlock screen
-		if (mWakeLock.isHeld()) mWakeLock.release();
-	}	
 
 	@Override
 	public void onClick(View v) {

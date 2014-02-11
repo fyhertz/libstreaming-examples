@@ -56,7 +56,6 @@ public class MainActivity extends Activity implements OnClickListener, RtspClien
 		super.onCreate(savedInstanceState);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		setContentView(R.layout.activity_main);
 
 		mButtonStart = (Button) findViewById(R.id.start);

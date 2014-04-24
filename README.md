@@ -30,7 +30,7 @@ git submodule init
 git submodule update
 ```
 
-3. Run the following command in the libstreaming directory and in the directory of the example you wish to compile:
+3. Run the **android project update** command in the libstreaming directory and in the directory of the example you wish to compile:
 ```sh
 cd libstreaming
 android update project --path . --target android-19

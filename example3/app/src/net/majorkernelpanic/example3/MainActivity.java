@@ -126,7 +126,7 @@ OnCheckedChangeListener {
 
 		// Use this if you want the aspect ratio of the surface view to 
 		// respect the aspect ratio of the camera preview
-		mSurfaceView.setAspectRatioMode(SurfaceView.ASPECT_RATIO_PREVIEW);
+		//mSurfaceView.setAspectRatioMode(SurfaceView.ASPECT_RATIO_PREVIEW);
 
 		mSurfaceView.getHolder().addCallback(this);
 

@@ -3,7 +3,6 @@ package net.majorkernelpanic.example3;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.majorkernelpanic.streaming.MediaStream;
 import net.majorkernelpanic.streaming.Session;
 import net.majorkernelpanic.streaming.SessionBuilder;
 import net.majorkernelpanic.streaming.audio.AudioQuality;

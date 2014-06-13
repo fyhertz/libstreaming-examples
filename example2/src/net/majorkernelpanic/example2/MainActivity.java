@@ -95,7 +95,7 @@ public class MainActivity extends Activity implements OnClickListener, Session.C
 	}
 
 	@Override
-	public void onBitrareUpdate(long bitrate) {
+	public void onBitrateUpdate(long bitrate) {
 		Log.d(TAG,"Bitrate: "+bitrate);
 	}
 

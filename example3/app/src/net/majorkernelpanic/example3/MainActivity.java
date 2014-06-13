@@ -3,6 +3,7 @@ package net.majorkernelpanic.example3;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.majorkernelpanic.streaming.MediaStream;
 import net.majorkernelpanic.streaming.Session;
 import net.majorkernelpanic.streaming.SessionBuilder;
 import net.majorkernelpanic.streaming.audio.AudioQuality;
@@ -104,7 +105,7 @@ OnCheckedChangeListener {
 		// Configures the SessionBuilder
 		mSession = SessionBuilder.getInstance()
 				.setContext(getApplicationContext())
-				.setAudioEncoder(SessionBuilder.AUDIO_NONE)
+				.setAudioEncoder(SessionBuilder.AUDIO_AAC)
 				.setAudioQuality(new AudioQuality(8000,16000))
 				.setVideoEncoder(SessionBuilder.VIDEO_H264)
 				.setSurfaceView(mSurfaceView)
@@ -120,7 +121,7 @@ OnCheckedChangeListener {
 		// Use this to force streaming with the MediaRecorder API
 		//mSession.getVideoTrack().setStreamingMethod(MediaStream.MODE_MEDIARECORDER_API);
 
-		// Use this to stream over TCP
+		// Use this to stream over TCP, EXPERIMENTAL!
 		//mClient.setTransportMode(RtspClient.TRANSPORT_TCP);
 
 		// Use this if you want the aspect ratio of the surface view to 
@@ -229,7 +230,7 @@ OnCheckedChangeListener {
 			editor.commit();
 
 			// We parse the URI written in the Editext
-			Pattern uri = Pattern.compile("rtsp://(.+):(\\d+)/(.+)");
+			Pattern uri = Pattern.compile("rtsp://(.+):?(\\d*)/(.+)");
 			Matcher m = uri.matcher(mEditTextURI.getText()); m.find();
 			ip = m.group(1);
 			port = m.group(2);
@@ -258,7 +259,7 @@ OnCheckedChangeListener {
 	}
 
 	@Override
-	public void onBitrareUpdate(long bitrate) {
+	public void onBitrateUpdate(long bitrate) {
 		mTextBitrate.setText(""+bitrate/1000+" kbps");
 	}
 

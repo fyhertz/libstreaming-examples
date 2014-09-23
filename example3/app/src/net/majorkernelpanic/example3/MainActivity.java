@@ -230,7 +230,7 @@ OnCheckedChangeListener {
 			editor.commit();
 
 			// We parse the URI written in the Editext
-			Pattern uri = Pattern.compile("rtsp://(.+):?(\\d*)/(.+)");
+			Pattern uri = Pattern.compile("rtsp://(.+):(\\d*)/(.+)");
 			Matcher m = uri.matcher(mEditTextURI.getText()); m.find();
 			ip = m.group(1);
 			port = m.group(2);

@@ -33,9 +33,9 @@ git submodule update
 3. Run the **android project update** command in the libstreaming directory and in the directory of the example you wish to compile:
 ```sh
 cd libstreaming
-android update project --path . --target android-19
+android update project --path . --target android-21
 cd ../example3/app
-android update project --path . --target android-19
+android update project --path . --target android-21
 ```
 
 4. Run ant
